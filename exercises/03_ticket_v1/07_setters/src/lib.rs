@@ -3,6 +3,8 @@
 //   Even better, extract that logic and reuse it in both places. You can use
 //   private functions or private static methods for that.
 
+use std::fmt::DebugSet;
+
 pub struct Ticket {
     title: String,
     description: String,
@@ -10,22 +12,34 @@ pub struct Ticket {
 }
 
 impl Ticket {
-    pub fn new(title: String, description: String, status: String) -> Ticket {
-        if title.is_empty() {
+
+    fn verify_title(new_title: &String){
+        if new_title.is_empty() {
             panic!("Title cannot be empty");
         }
-        if title.len() > 50 {
+        if new_title.len() > 50 {
             panic!("Title cannot be longer than 50 bytes");
         }
-        if description.is_empty() {
+    }
+
+    fn verify_description(new_description: &String){
+        if new_description.is_empty() {
             panic!("Description cannot be empty");
         }
-        if description.len() > 500 {
+        if new_description.len() > 500 {
             panic!("Description cannot be longer than 500 bytes");
         }
-        if status != "To-Do" && status != "In Progress" && status != "Done" {
+    }
+
+    fn verify_status(new_status: &String){
+        if new_status != "To-Do" && new_status != "In Progress" && new_status != "Done" {
             panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
         }
+    }
+    pub fn new(title: String, description: String, status: String) -> Ticket {
+        Self::verify_title(&title);
+        Self::verify_description(&description);
+        Self::verify_status(&status);
 
         Ticket {
             title,
@@ -33,6 +47,8 @@ impl Ticket {
             status,
         }
     }
+
+
 
     pub fn title(&self) -> &String {
         &self.title
@@ -44,6 +60,21 @@ impl Ticket {
 
     pub fn status(&self) -> &String {
         &self.status
+    }
+
+    pub fn set_title(&mut self, new_title: String){
+        Self::verify_title(&new_title);
+        self.title = new_title;
+    }
+
+    pub fn set_description(&mut self, new_description: String) {
+        Self::verify_description(&new_description);
+        self.description = new_description;
+    }
+
+    pub fn set_status(&mut self, new_status: String)  {
+        Self::verify_status(&new_status);
+        self.status = new_status;
     }
 }
 
